@@ -1,0 +1,88 @@
+import pygame
+pygame.init()
+
+#player screens
+menu = False
+play = True
+instruct = False
+win = False
+over = False
+
+#colours
+ground = (84, 109, 0)
+sky = (164, 221, 237)
+sky2 = (171, 146, 255)
+white = (255, 255, 255)
+black = (0, 0, 0)
+pink = (159, 29, 53)
+
+#setting up the game screen
+width = 500
+height = 1000
+size = (width, height)
+screen = pygame.display.set_mode(size)
+pygame.display.set_caption("A Line")
+
+#time
+clock = pygame.time.Clock()
+clock.tick(60)
+
+while menu:
+#background
+    pygame.display.flip()
+    screen.fill(white)
+
+    for event in pygame.event.get():
+        if event.type == pygame.KEYDOWN:
+            play = False
+            menu = False
+            win = True
+
+
+while instruct:
+#background
+    pygame.display.flip()
+    screen.fill(pink)
+
+i = 250
+j = 580
+kk = 0
+ll = 0
+
+while play:
+   #the ground
+    screen.fill(sky2)
+    pygame.draw.rect(screen, ground, [0, 600, width, height / 4])
+   # character
+    pygame.draw.ellipse(screen, white, [i, j, 25, 25])
+    i += kk
+    j += ll
+    while ll < 0:
+        ll += -0.06
+    for event in pygame.event.get():
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_LEFT:
+                kk = -0.4
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_RIGHT:
+                kk = 0.4
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_UP:
+                ll += -0.06
+                print(ll)
+
+    if i < 0 or i > width:
+        kk *= -1
+    if ll < -0.2:
+        ll *= -1
+        print(ll)
+    pygame.display.flip()
+
+while win:
+# background
+    pygame.display.flip()
+    screen.fill(sky)
+while over:
+# background
+    pygame.display.flip()
+    screen.fill(white)
