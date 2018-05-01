@@ -1,0 +1,92 @@
+#initialization
+import pygame, sys
+pygame.init()
+pygame.font.init()
+
+#setting up the game screen
+width = 500
+height = 600
+size = (width, height)
+screen = pygame.display.set_mode(size)
+pygame.display.set_caption("A Line")
+
+#time
+clock = pygame.time.Clock()
+clock.tick(60)
+
+#player screens
+menu = True
+instruct = False
+play = False
+win = False
+loss = False
+
+#colours
+ground = (84, 109, 0)
+sky = (164, 221, 237)
+sky2 = (171, 146, 255)
+white = (255, 255, 255)
+black = (0, 0, 0)
+pink = (159, 29, 53)
+
+while menu:
+#background
+    pygame.display.flip()
+    screen.fill(pink)
+#title
+    myfont = pygame.font.SysFont('Consolas', 30)
+    hi = myfont.render('Chris', False, sky2)
+    screen.blit(hi, (width / 2, height / 2))
+#for changing screens
+    for event in pygame.event.get():
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_SPACE:
+                play = True
+                menu = False
+            elif event.key == pygame.K_i:
+                instruct = True
+                menu = False
+
+while instruct:
+#background
+    pygame.display.flip()
+    screen.fill(sky)
+
+alienX = width / 2
+alienY = height - (height / 4)
+kk = 0
+ll = 0
+fat = 25
+
+while play:
+   #the ground
+    screen.fill(sky2)
+    pygame.draw.rect(screen, ground, [0, height - (height / 4), width, height / 4])
+   # character
+    pygame.draw.ellipse(screen, white, [alienX, alienY, fat, fat])
+    alienX += kk
+    alienY += ll
+    for event in pygame.event.get():
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_LEFT:
+                kk = -0.4
+            elif event.key == pygame.K_RIGHT:
+                kk = 0.4
+            elif event.key == pygame.K_UP:
+                ll = -0.06
+
+    if alienX < 0 or alienX > (width - fat):
+        kk *= -1
+    if alienY < 100:
+        ll *= -1
+    #flips the graphics
+    pygame.display.flip()
+
+while win:
+# background
+    pygame.display.flip()
+    screen.fill(sky)
+while loss:
+# background
+    pygame.display.flip()
+    screen.fill(white)
