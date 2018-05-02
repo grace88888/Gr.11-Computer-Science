@@ -1,3 +1,4 @@
+
 #initialization
 import pygame, sys
 pygame.init()
@@ -66,6 +67,7 @@ while play:
     pygame.draw.ellipse(screen, white, [alienX, alienY, fat, fat])
     alienX += kk
     alienY += ll
+
     for event in pygame.event.get():
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT:
@@ -74,11 +76,15 @@ while play:
                 kk = 0.4
             elif event.key == pygame.K_UP:
                 ll = -0.06
+        elif event.type == pygame.KEYUP:
+            kk = 0
+            ll = 0.098
 
     if alienX < 0 or alienX > (width - fat):
         kk *= -1
-    if alienY < 100:
-        ll *= -1
+    if alienY > height - (height / 4):
+        ll *= 0
+
     #flips the graphics
     pygame.display.flip()
 
