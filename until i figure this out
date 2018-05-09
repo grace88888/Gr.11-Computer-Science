@@ -1,5 +1,5 @@
 #initialization
-import pygame, sys
+import pygame, sys, random
 pygame.init()
 pygame.font.init()
 
@@ -28,6 +28,13 @@ sky2 = (171, 146, 255)
 white = (255, 255, 255)
 black = (0, 0, 0)
 pink = (159, 29, 53)
+
+# variables
+help = random.randint(1, 500)
+jelp = random.randint(1, 300)
+
+def no (hu, ju):
+    pygame.draw.rect(screen, ground, [hu, ju, 100, 30])
 
 while menu:
 #background
@@ -66,7 +73,7 @@ while play:
     pygame.draw.ellipse(screen, white, [alienX, alienY, fat, fat])
     alienX += kk
     alienY += ll
-
+    no (help, jelp)
     for event in pygame.event.get():
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT:
