@@ -1,4 +1,3 @@
-
 #initialization
 import pygame, sys
 pygame.init()
@@ -75,15 +74,16 @@ while play:
             elif event.key == pygame.K_RIGHT:
                 kk = 0.4
             elif event.key == pygame.K_UP:
-                ll = -0.06
+                ll = -0.1
         elif event.type == pygame.KEYUP:
             kk = 0
-            ll = 0.098
-
+            if alienY >= height - (height / 4):
+                ll = 0
+            else:
+                ll = 0.06
     if alienX < 0 or alienX > (width - fat):
         kk *= -1
-    if alienY > height - (height / 4):
-        ll *= 0
+
 
     #flips the graphics
     pygame.display.flip()
