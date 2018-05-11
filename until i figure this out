@@ -6,8 +6,12 @@ pygame.font.init()
 #setting up the game screen
 width = 500
 height = 600
-size = (width, height)
-screen = pygame.display.set_mode(size)
+stage = height * 2
+stageP = 0
+half = height / 2
+
+screen = pygame.display.set_mode((500, 600))
+#mean = pygame.display.set_mode((500, stage))
 pygame.display.set_caption("A Line")
 
 #time
@@ -15,11 +19,13 @@ clock = pygame.time.Clock()
 clock.tick(60)
 
 #player screens
-menu = True
+menu = False
 instruct = False
-play = False
+play = True
 win = False
 loss = False
+
+
 
 #colours
 ground = (84, 109, 0)
@@ -27,24 +33,43 @@ sky = (164, 221, 237)
 sky2 = (171, 146, 255)
 white = (255, 255, 255)
 black = (0, 0, 0)
-pink = (159, 29, 53)
+pink = (240, 84, 85)
+pink2 = (108, 0, 44)
+purpatrate = (181, 126, 220)
+green = (5, 172, 81)
+rouge = (117, 0, 7)
+blouge = (38, 73, 61)
+yellow = (253, 210, 82)
+bleen = (32, 161, 133)
 
 # variables
 help = random.randint(1, 500)
 jelp = random.randint(1, 300)
+alienX = width / 2
+alienY = height - (height / 4)
+kk = 0
+ll = 0
+fat = 25
 
 def no (hu, ju):
     pygame.draw.rect(screen, ground, [hu, ju, 100, 30])
 
-while menu:
+while menu == True:
 #background
     pygame.display.flip()
-    screen.fill(pink)
+    screen.fill(black)
+    pygame.draw.ellipse(screen, pink, [width / 2 - 700 / 2, height - 500 / 2, 700, 500])
+
 #title
     myfont = pygame.font.SysFont('Consolas', 30)
-    hi = myfont.render('Chris', False, sky2)
-    screen.blit(hi, (width / 2, height / 2))
-#for changing screens
+    hi = myfont.render('Get Me Out of Here', False, white)
+    screen.blit(hi, (100, 250))
+    myfont = pygame.font.SysFont('Consolas', 20)
+    please = myfont.render('Press [space] to play', False, pink2)
+    pie = myfont.render('Press [i] for instructions', False, pink2)
+    screen.blit(please, (125, height - 150))
+    screen.blit(pie, (100, height - 100))
+# for changing screens
     for event in pygame.event.get():
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
@@ -54,21 +79,28 @@ while menu:
                 instruct = True
                 menu = False
 
+
 while instruct:
 #background
     pygame.display.flip()
-    screen.fill(sky)
-
-alienX = width / 2
-alienY = height - (height / 4)
-kk = 0
-ll = 0
-fat = 25
+    screen.fill(black)
+#text
+    myfont = pygame.font.SysFont('Consolas', 20)
+    rig = myfont.render('Press [right] to move right', False, purpatrate)
+    lef = myfont.render('Press [left] to move left', False, purpatrate)
+    screen.blit(rig, (125, height - 150))
+    screen.blit(lef, (100, height - 100))
+# going back
+    for event in pygame.event.get():
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_ESCAPE:
+                play = True
+                instruct = False
 
 while play:
    #the ground
-    screen.fill(sky2)
-    pygame.draw.rect(screen, ground, [0, height - (height / 4), width, height / 4])
+    screen.fill(rouge)
+    pygame.draw.rect(screen, bleen, [0, height - (height / 4), width, height / 4])
    # character
     pygame.draw.ellipse(screen, white, [alienX, alienY, fat, fat])
     alienX += kk
@@ -82,12 +114,17 @@ while play:
                 kk = 0.4
             elif event.key == pygame.K_UP:
                 ll = -0.1
+                if alienY < half:
+                    alienY = half
+                    stageP += 0.1
+
         elif event.type == pygame.KEYUP:
             kk = 0
-            if alienY >= height - (height / 4):
-                ll = 0
-            else:
-                ll = 0.06
+            ll = 0
+            #if alienY >= height - (height / 4):
+             #   ll = 0
+            #else:
+             #   ll = 0.06
     if alienX < 0 or alienX > (width - fat):
         kk *= -1
 
