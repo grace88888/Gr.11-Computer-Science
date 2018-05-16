@@ -6,13 +6,14 @@ pygame.font.init()
 #setting up the game screen
 width = 500
 height = 600
+
 #testing
 stage = height * 2
 stageP = 0
 half = height / 2
+#mean = pygame.display.set_mode((500, stage))
 
 screen = pygame.display.set_mode((500, 600))
-#mean = pygame.display.set_mode((500, stage))
 pygame.display.set_caption("A Line")
 
 #time
@@ -22,6 +23,8 @@ clock.tick(60)
 #player screens
 displayScreen = "menu"
 gaming = True
+
+colourG = 143
 
 #colours
 ground = (84, 109, 0)
@@ -37,7 +40,7 @@ rouge = (117, 0, 7)
 blouge = (38, 73, 61)
 yellow = (253, 210, 82)
 bleen = (32, 161, 133)
-roseybrown = (188, 143, 143)
+
 spotify = (69, 25, 17)
 
 # variables
@@ -48,6 +51,7 @@ alienX = width / 2
 alienY = height - (height / 4) - alienSize
 changeX = 0
 changeY = 0
+gravity = 0
 
 
 def platforms(platformX, platformY):
@@ -82,6 +86,7 @@ def instruct():
 
 def play(x, y, size):
    #the ground
+    roseybrown = (188, colourG, colourG)
     screen.fill(roseybrown)
     pygame.draw.rect(screen, spotify, [0, height - (height / 4), width, height / 4])
 
@@ -98,7 +103,6 @@ def loss():
     screen.fill(white)
 
 while gaming:
-    changeYamount = 0
     # checking for arrow keys (for going back to the menu screen and player movement)
     for event in pygame.event.get():
         if event.type == pygame.KEYDOWN:
@@ -108,12 +112,16 @@ while gaming:
                 changeX = 0.4
         elif event.type == pygame.KEYUP:
             changeX = 0
+
     #checking for left and right boundaries
     if alienX < 0 or alienX > (width - alienSize):
         changeX *= -1
         #if alienY < half:
          #   alienY = half
            # stageP += 0.1
+    elif alienY > height - (height / 4) - alienSize:
+        changeY = 0
+        gravity = 0
 
     #for changing into different screens
     if displayScreen == "menu":
@@ -128,17 +136,18 @@ while gaming:
             displayScreen = "menu"
     elif displayScreen == "play":
         play(alienX, alienY, alienSize)
+
         if keyboard.is_pressed('escape'):
             displayScreen = "menu"
-            # for player movement
+
+        # for player movement
         alienX += changeX
         if keyboard.is_pressed('up'):
-            if changeY == 0:
-                changeY = -0.1
-        if changeYamount < -2:
-            changeY *= -1
-        alienY += changeY
-        changeYamount += changeY
-        print(changeYamount)
+            changeY = 0.25
+            gravity = 0.007
+            #colourG += 0.06
+        alienY -= changeY
+        changeY -= gravity
+
     #flips the graphics onto the screen
     pygame.display.flip()
