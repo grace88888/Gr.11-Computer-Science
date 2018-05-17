@@ -1,7 +1,11 @@
 #initialization
-import pygame, random, sys, keyboard
+import pygame, random, sys, keyboard, time
+from pygame.locals import *
+
 pygame.init()
 pygame.font.init()
+
+#what = pygame.image.load('cat')
 
 #setting up the game screen
 width = 500
@@ -25,6 +29,7 @@ displayScreen = "menu"
 gaming = True
 
 colourG = 143
+colourB = 143
 
 #colours
 ground = (84, 109, 0)
@@ -40,8 +45,7 @@ rouge = (117, 0, 7)
 blouge = (38, 73, 61)
 yellow = (253, 210, 82)
 bleen = (32, 161, 133)
-
-spotify = (69, 25, 17)
+spotify = (69, colourB, colourB)
 
 # variables
 randomX = random.randint(0, width)
@@ -52,7 +56,6 @@ alienY = height - (height / 4) - alienSize
 changeX = 0
 changeY = 0
 gravity = 0
-
 
 def platforms(platformX, platformY):
     pygame.draw.rect(screen, spotify, [platformX, platformY, 100, 30])
@@ -86,7 +89,8 @@ def instruct():
 
 def play(x, y, size):
    #the ground
-    roseybrown = (188, colourG, colourG)
+
+    roseybrown = (colourG, colourG, colourG)
     screen.fill(roseybrown)
     pygame.draw.rect(screen, spotify, [0, height - (height / 4), width, height / 4])
 
@@ -145,9 +149,13 @@ while gaming:
         if keyboard.is_pressed('up'):
             changeY = 0.25
             gravity = 0.007
-            #colourG += 0.06
+            if colourG < 255.90:
+                colourG += 0.05
+            if colourB > 0.10:
+                colourB -= 0.05
         alienY -= changeY
         changeY -= gravity
+
 
     #flips the graphics onto the screen
     pygame.display.flip()
