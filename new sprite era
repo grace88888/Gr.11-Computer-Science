@@ -7,9 +7,6 @@ height = 600
 alienSize = 100
 alienX = width / 2
 alienY = height - (height / 4) - alienSize
-changeX = 0
-changeY = 0
-gravity = 0
 
 #colours
 colourG = 143
@@ -34,14 +31,10 @@ class Platforms(pygame.sprite.Sprite):
     def __init__(self, width, height):
         pygame.sprite.Sprite.__init__(self)
         self.image = pygame.Surface([width, height])
-        self.image = pygame.image.load("huuy.png").convert()
+        self.image = pygame.image.load("erin.png").convert()
         self.image = pygame.transform.scale(self.image, (100, 30))
         self.rect = self.image.get_rect()
 
-        self.left_boundary = 0
-        self.right_boundary = 0
-        self.top_boundary = 0
-        self.bottom_boundary = 0
         self.changeX = 0
         self.changeY = 0
 
@@ -52,34 +45,31 @@ class Player(pygame.sprite.Sprite):
         self.image = pygame.image.load("erin.png").convert()
         self.image = pygame.transform.scale(self.image, (100, 100))
         self.rect = self.image.get_rect()
-        self.rect.x = alienX
-        self.rect.y = alienY
-        self.left_boundary = 0
-        self.right_boundary = 0
-        self.top_boundary = 0
-        self.bottom_boundary = 0
+
         self.changeX = 0
         self.changeY = 0
+        self.gravity = 0
 
     def update(self):
-        """ Called each frame. """
         self.rect.x += self.changeX
-        self.rect.y += self.changeY
+        self.rect.y -= self.changeY
+        self.changeY -= self.gravity
 
-        #checking for left and right boundaries
+    #checking for left and right boundaries
     def meh(self):
         self.changeX *= -1
+    def right(self):
+        self.changeX = 2
     def stop(self):
         self.changeY = 0
-        gravity = 0
-    def left (self):
-        self.changeX = -0.4
-    def right(self):
-        self.changeX = 0.4
-
+        self.gravity = 0
+    def left(self):
+        self.changeX = -2
     def stopX(self):
         self.changeX = 0
-
+    def jump(self):
+        self.changeY = 0.25
+        self.gravity = 0.007
 
 pygame.init()
 pygame.font.init()
@@ -100,15 +90,13 @@ gaming = True
 platforms = pygame.sprite.Group()
 all = pygame.sprite.Group()
 playa = Player(width, height)
+playa.rect.x = alienX
+playa.rect.y = alienY
 all.add(playa)
 for i in range (10):
     block = Platforms(width, height)
     block.rect.x = random.randrange(0, width)
     block.rect.y = random.randrange(1, height - (height / 4))
-    block.left_boundary = 0
-    block.top_boundary = 0
-    block.right_boundary = 500
-    block.bottom_boundary = 500
     platforms.add(block)
     all.add(block)
 
@@ -139,14 +127,14 @@ def instruct():
     screen.blit(rightInstruct, (125, height - 150))
     screen.blit(leftInstruct, (100, height - 100))
 
-def play(x, y, size):
+def play():
    #the ground
     roseybrown = (colourG, colourG, colourG)
     screen.fill(roseybrown)
     pygame.draw.rect(screen, spotify, [0, height - (height / 4), width, height / 4])
 
    # character
-    pygame.draw.ellipse(screen, blouge, [x, y, size, size])
+    #pygame.draw.ellipse(screen, blouge, [x, y, size, size])
 
     all.update()
     all.draw(screen)
@@ -160,25 +148,32 @@ def loss():
     screen.fill(white)
 
 while gaming:
+
     # checking for arrow keys (for going back to the menu screen and player movement)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            x = False
-        elif event.type == pygame.KEYDOWN:
+            gaming = False
+        if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT:
                 playa.left()
             elif event.key == pygame.K_RIGHT:
                 playa.right()
+            elif event.key == pygame.K_UP:
+                playa.jump()
+                if colourG < 255.90:
+                    colourG += 0.05
+                if colourB > 0.10:
+                    colourB -= 0.05
         elif event.type == pygame.KEYUP:
             playa.stopX()
+            playa.stop()
 
     #checking for left and right boundaries
-    if alienX < 0 or alienX > (width - alienSize):
-        playa.stop()
+    if playa.rect.x < 0 or playa.rect.x > (width - alienSize):
+        playa.meh()
 
-           # elif alienY > height - (height / 4) - alienSize:
-            #    self.changeY = 0
-             #   gravity = 0
+    elif playa.rect.y > height - (height / 4) - alienSize:
+        playa.stop()
 
     #for changing into different screens
     if displayScreen == "menu":
@@ -192,22 +187,12 @@ while gaming:
         if keyboard.is_pressed('escape'):
             displayScreen = "menu"
     elif displayScreen == "play":
-        play(alienX, alienY, alienSize)
-
+        play()
         if keyboard.is_pressed('escape'):
             displayScreen = "menu"
 
         # for player movement
-        alienX += changeX
-        if keyboard.is_pressed('up'):
-            changeY = 0.25
-            gravity = 0.007
-            if colourG < 255.90:
-                colourG += 0.05
-            if colourB > 0.10:
-                colourB -= 0.05
-        alienY -= changeY
-        changeY -= gravity
+
 
     #flips the graphics onto the screen
     pygame.display.flip()
