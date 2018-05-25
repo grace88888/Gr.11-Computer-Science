@@ -27,8 +27,8 @@ class Platforms(pygame.sprite.Sprite):
     def __init__(self, width, height):
         pygame.sprite.Sprite.__init__(self)
         self.image = pygame.Surface([width, height])
-        self.image = pygame.image.load("erin.png").convert()
-        self.image = pygame.transform.scale(self.image, (100, 30))
+        self.image.fill((69, 0, 255))
+        self.image = pygame.transform.scale(self.image, (100, 20))
         self.rect = self.image.get_rect()
 
 class Player(pygame.sprite.Sprite):
@@ -67,10 +67,10 @@ class Player(pygame.sprite.Sprite):
         if self.changeY == 0:
             self.changeY = 3.5
             self.gravity = 0.09
-        if self.colourG < 255.90:
-            self.colourG += 0.05
-        if self.colourB > 0.10:
-            self.colourB -= 0.05
+        if self.colourG > 0.10:
+            self.colourG -= 0.05
+        if self.colourB < 255.90:
+            self.colourB += 0.05
     def stopX(self):
         self.changeX = 0
     def stopY(self):
@@ -135,7 +135,7 @@ def instruct():
 def play():
    #the ground and sky
     moonrise = (alien.colourG, alien.colourG, alien.colourG)
-    dirt = (69, alien.colourB, alien.colourB)
+    dirt = (69, alien.colourG, alien.colourB)
     screen.fill(moonrise)
     pygame.draw.rect(screen, dirt, [0, height - (height / 4), width, height / 4])
 
