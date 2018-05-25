@@ -1,0 +1,144 @@
+import pygame, random, keyboard
+
+# variables
+width = 500
+height = 600
+alienSize = 100
+alienX = width / 2
+alienY = height - (height / 4) - alienSize
+
+
+#testing
+#stage = height * 2
+#stageP = 0
+#half = height / 2
+#mean = pygame.display.set_mode((500, stage))
+# if alienY < half:
+#   alienY = half
+# stageP += 0.1
+
+class Platforms(pygame.sprite.Sprite):
+    def __init__(self, color, width, height):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.Surface([width, height])
+        self.image = pygame.image.load("huuy.png").convert()
+        self.image = pygame.transform.scale(self.image, (100, 20))
+        self.rect = self.image.get_rect()
+
+        self.change_x = 0
+        self.change_y = 0
+
+class Player(pygame.sprite.Sprite):
+    def __init__(self, width, height):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.Surface([width, height])
+        self.image = pygame.image.load("erin.png").convert()
+        self.image = pygame.transform.scale(self.image, (100, 100))
+        self.rect = self.image.get_rect()
+        self.rect.x = 250
+        self.rect.y = height - (height / 4) - alienSize
+
+        self.changeX = 0
+        self.changeY = 0
+        self.gravity = 0
+    def update(self):
+        self.rect.x += self.changeX
+        self.rect.y -= self.changeY
+        self.changeY -= self.gravity
+
+
+    #checking for left and right boundaries
+    def meh(self):
+        self.changeX *= -1
+    def right(self):
+        self.changeX = 5
+    def left(self):
+        self.changeX = -5
+    def stopX(self):
+        self.changeX = 0
+    def jump(self):
+        if self.changeY == 0:
+            self.changeY = 4
+            self.gravity = 1
+    def stop (self):
+        self.rect.y =350
+        self.changeY = 0
+        self.gravity = 0
+
+
+pygame.init()
+screen = pygame.display.set_mode((500, 600))
+platforms = pygame.sprite.Group()
+all = pygame.sprite.Group()
+
+playa = Player(width, height)
+
+
+for i in range (3):
+    block = Platforms((200, 200, 251), 100, 20)
+    block.rect.x = random.randrange(50, 400)
+    block.rect.y = random.randrange(70, 500)
+
+    platforms.add(block)
+    all.add(block)
+
+clock = pygame.time.Clock()
+
+displayScreen = 'menu'
+x = True
+all.add(playa)
+
+def menu():
+# background
+    screen.fill((60,100,2))
+def play(playa):
+   #the ground
+    roseybrown = (29,29,29)
+    screen.fill(roseybrown)
+    pygame.draw.rect(screen, (0,80,56), [0, height - (height / 4), width, height / 4])
+   # checking for left and right boundaries
+
+
+
+    if keyboard.is_pressed('up'):
+        playa.jump()
+        print(playa.changeY, playa.rect.y)
+    if playa.rect.y > height - (height / 4) - alienSize:
+        playa.stop()
+   # character
+    #pygame.draw.ellipse(screen, blouge, [x, y, size, size])
+
+    all.update()
+    all.draw(screen)
+while x:
+    screen.fill((8,80,79))
+    pygame.draw.rect(screen, (0, 8, 80), [0, height - (height / 4), width, height / 4])
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            x = False
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_LEFT:
+                playa.left()
+            elif event.key == pygame.K_RIGHT:
+                playa.right()
+        elif event.type == pygame.KEYUP:
+            playa.stopX()
+        # checking for left and right boundaries
+    if playa.rect.x < 0 or playa.rect.x > 400:
+        playa.meh()
+    for b in platforms:
+        if pygame.sprite.collide_rect(playa, b):
+            playa.changeY = 0
+
+    if displayScreen == "menu":
+        menu()
+        if keyboard.is_pressed('space'):
+            displayScreen = "play"
+    elif displayScreen == "play":
+        play(playa)
+        if keyboard.is_pressed('escape'):
+            displayScreen = "menu"
+
+    clock.tick(60)
+    pygame.display.flip()
+pygame.quit()
