@@ -1,4 +1,4 @@
-#This game is about an undercover alien leaving earth because apocalypse
+#This game is about an undercover alien leaving earth because apocalypse... by Grace
 #initialization
 import pygame, random, keyboard, time
 
@@ -9,6 +9,8 @@ alienSize = 50
 alienX = width / 2
 alienY = height - (height / 4) - alienSize
 score = 0
+gaming = True
+beginScoring = False
 
 #colours
 white = (255, 255, 255)
@@ -24,12 +26,13 @@ purpatrate = (181, 126, 220)
 pink = (240, 84, 85)
 pink2 = (108, 0, 44)
 
+#setting up classes (for lives, platforms and the player)
 class Lives(pygame.sprite.Sprite):
     def __init__(self, width, height):
         pygame.sprite.Sprite.__init__(self)
         self.image = pygame.Surface([width, height])
 
-        #loading the image and cutting it
+        #loading the image and sizing it
         self.image = pygame.image.load("heart.png").convert_alpha()
         self.mask = pygame.mask.from_surface(self.image)
         self.image = pygame.transform.scale(self.image, (35, 30))
@@ -37,59 +40,57 @@ class Lives(pygame.sprite.Sprite):
         self.rect.x = 20
         self.rect.y = 20
 
-#setting up classes for platforms and the player
 class Platforms(pygame.sprite.Sprite):
     def __init__(self, width, height):
         pygame.sprite.Sprite.__init__(self)
         self.image = pygame.Surface([width, height])
+
+        #loading the image, sizing it
         self.image = pygame.transform.scale(self.image, (100, 20))
         self.mask = pygame.mask.from_surface(self.image)
         self.rect = self.image.get_rect()
+        self.changeY = 0
+        self.movement = 0
+
+        #colouring
         self.colourG = 255
         self.colourB = 143
-        self.changeY = 0
-        self.shift = 0
-        self.ii = (0, 80, 200)
-        self.why = 0
-        self.bye = 0
-        self.shy = 0
+        self.colours = (0, 80, 200)
+        self.colourRate = 0
 
     def update(self):
-        self.image.fill(self.ii)
+        self.image.fill(self.colours)
         self.rect.y += self.changeY
 
+    #for platform movement with the screem
+    def shift(self):
+        self.movement = height / 2 - alien.rect.y
+        if self.movement != 0 and self.movement > 0:
+            self.rect.y += 1
+        else:
+            self.rect.y += 0
 
-    #for platform changing colour
+    #colour application
     def colourChange(self):
         if self.colourG > 0.10:
             self.colourG -= 0.05
         if self.colourB < 255.90:
             self.colourB += 0.05
-    def fall(self):
-        self.shy = height / 2 - alien.rect.y
-        print(self.shy, height/ 2, alien.rect.y)
-        if self.shy != 0 and self.shy > 0:
-            self.rect.y += 1
-        else:
-            self.rect.y +=0
-    def shifts(self):
-        if self.shift == 0:
-            self.shift = 1.9
-    def herps(self):
-        self.why += 9
-        if self.why == 81 * 90:
-            self.ii = (69, 69, 69)
-        elif self.why == 81 *180:
-            self.ii = (9,40,135)
-        elif self.why == 81 *270:
-            self.ii = (100, 80, 90)
+    def disappear(self):
+        self.colourRate += 9
+        if self.colourRate == 81 * 90:
+            self.colours = (69, 69, 69)
+        elif self.colourRate == 81 *180:
+            self.colours = (9,40,135)
+        elif self.colourRate == 81 *270:
+            self.colours = (100, 80, 90)
 
 class Player(pygame.sprite.Sprite):
     def __init__(self, width, height):
         pygame.sprite.Sprite.__init__(self)
         self.image = pygame.Surface([width, height])
 
-        #loading the image and cutting it
+        #loading the image and sizing it
         self.image = pygame.image.load("lamb.png").convert_alpha()
         self.mask = pygame.mask.from_surface(self.image)
         self.image = pygame.transform.scale(self.image, (50, 50))
@@ -120,6 +121,7 @@ class Player(pygame.sprite.Sprite):
         if self.changeY == 0:
             self.changeY = 4.5
             self.gravity = 0.09
+        #colour
         if self.colourG > 0.10:
             self.colourG -= 0.05
         if self.colourB < 255.90:
@@ -136,19 +138,17 @@ pygame.font.init()
 
 #setting up the game screen
 screen = pygame.display.set_mode((width, height))
-pygame.display.set_caption("hah")
+pygame.display.set_caption("( ͡° ͜ʖ ͡°)")
+myfont = pygame.font.SysFont('Consolas', 20)
 
-#time and frames?
+#setting time and fps?
 clock = pygame.time.Clock()
 clock.tick(60)
 pygame.time.set_timer(pygame.USEREVENT, 1000)
 
-gaming = True
-myfont = pygame.font.SysFont('Consolas', 20)
-
 #setting up sprite groups
-platforms = pygame.sprite.Group()
 lives = pygame.sprite.Group()
+platforms = pygame.sprite.Group()
 all = pygame.sprite.Group()
 alien = Player(width, height)
 all.add(alien)
@@ -176,20 +176,19 @@ for j in range (3):
     all.add(heart)
 
 def play():
-   #the ground and sky
+   #the sky
     moonrise = (alien.colourG, alien.colourG, alien.colourG)
-    dirt = (69, alien.colourG, alien.colourB)
     screen.fill(moonrise)
 
+    #scoreboard
     scoreWrite = myfont.render("Score: " + str(score), False, (46, 72, 89))
     screen.blit(scoreWrite, (width - 110, 20))
 
-    #for player jumping and colour changing
+    #for player jumping
     if keyboard.is_pressed('up'):
         alien.jumpUp()
-        for aBlock in platforms:
-            aBlock.colourChange()
 
+    #generating new platforms and deleting the old ones
     changePlatY = 400
     for p in platforms:
         if p.rect.y > height:
@@ -202,22 +201,21 @@ def play():
                 platforms.add(block)
                 all.add(block)
 
-
-    for ul in lives:
+    #removing lives
+    for aLife in lives:
         if alien.rect.y > height:
-            ul.kill()
-        print('lllllllllllllllll')
+            aLife.kill()
 
    #drawing all sprites (platforms and player)
     all.update()
     all.draw(screen)
-pp = False
+
 while gaming:
     # checking for arrow keys (for going back to the menu screen and player movement)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             gaming = False
-        if event.type == pygame.USEREVENT and pp == True:
+        if event.type == pygame.USEREVENT and beginScoring == True:
             score += 1
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT:
@@ -230,22 +228,22 @@ while gaming:
     #checking for right and left boundaries
     if alien.rect.x < 0 or alien.rect.x > width - alienSize:
         alien.bounce()
-    for falling in platforms:
-        if alien.rect.y < height / 2:
-            falling.fall()
-            pp = True
 
-    #checking for sprite collisions
+    #checking for initiation with platforms
     for onePlatform in platforms:
+        #if the player passes the halfway point, start score and actual game
+        if alien.rect.y < height / 2:
+            beginScoring = True
+            onePlatform.shift()
+
+        #checking for player and platform collision
         if pygame.sprite.collide_rect(alien, onePlatform):
             alien.changeY = 0
-            #onePlatform.fall()
-            onePlatform.herps()
-            if onePlatform.ii == (100, 80, 90):
+            onePlatform.disappear()
+            if onePlatform.colours == (100, 80, 90):
                 onePlatform.kill()
 
     #print(len(platforms))
-
     play()
 
     #flips the graphics onto the screen
