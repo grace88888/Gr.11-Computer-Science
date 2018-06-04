@@ -287,12 +287,14 @@ def play():
         alien.jumpUp()
 
     # drawing the health bar declining
+    healthWrite = myfont.render("EMPTINESS", False, ground)
+    screen.blit(healthWrite, (25, 55))
     for person in enemies:
         if pygame.sprite.collide_rect(person, alien) and health.width > 1:
             health.change = 0.7
         else:
             health.change = 0
-    pygame.draw.rect(screen, black, (20, 55, 120, 20))
+    #pygame.draw.rect(screen, black, (20, 55, 120, 20))
 
     # removing lives
     for aLife in lives:
