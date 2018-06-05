@@ -170,15 +170,15 @@ class Player(pygame.sprite.Sprite):
 
     # checking for left and right boundaries and player movement functions ... and colour
     def right(self):
-        self.changeX = 2
+        self.changeX = 1
     def left(self):
-        self.changeX = -2
+        self.changeX = -1
     def bounce(self):
         self.changeX *= -1
     def jumpUp(self):
         if self.changeY == 0:
             self.changeY = 4.5
-            self.gravity = 0.09
+            self.gravity = 0.07
         # colour
         if self.colourG > 0.10:
             self.colourG -= 0.05
@@ -186,6 +186,7 @@ class Player(pygame.sprite.Sprite):
             self.colourB += 0.05
     def stopX(self):
         self.changeX = 0
+        self.rect.y = self.rect.y + 1
 
 pygame.init()
 pygame.font.init()
@@ -197,21 +198,19 @@ myfont = pygame.font.SysFont('Consolas', 20)
 
 # setting time and fps?
 clock = pygame.time.Clock()
-clock.tick(60)
 pygame.time.set_timer(pygame.USEREVENT, 1000)
 
 # setting up sprite groups
 lives = pygame.sprite.Group()
 platforms = pygame.sprite.Group()
 enemies = pygame.sprite.Group()
+healthness = pygame.sprite.Group()
 all = pygame.sprite.Group()
 
 # adding to sprite groups
 alien = Player(width, height)
-health = Healthbar(width, height)
 all.add(alien)
-all.add(health)
-changeHeartX = 20
+changeHeartX = 106
 changePlatY = 400 - (height / 6)
 for i in range(7):
     block = Platforms(width, height + 200)
@@ -230,7 +229,7 @@ for j in range(3):
     heart = Lives(width, height)
     heart.rect.x = changeHeartX
     heart.rect.y = 20
-    changeHeartX += 43
+    changeHeartX -= 43
     lives.add(heart)
     all.add(heart)
 
@@ -297,11 +296,20 @@ def play():
         else:
             health.change = 0
     #pygame.draw.rect(screen, black, (20, 55, 120, 20))
-
     # removing lives
     for aLife in lives:
         if alien.rect.y > height:
             aLife.kill()
+        for g in healthness:
+            if g.width <= 1 and len(lives) == 3:
+                g.kill()
+                aLife.kill()
+            elif g.width <= 1 and len(lives) == 2:
+                g.kill()
+                aLife.kill()
+                all.remove(aLife)
+            elif g.width <= 1 and len(lives) == 1:
+                aLife.kill()
 
     # drawing all sprites (platforms and player)
     all.update()
@@ -324,6 +332,7 @@ def loss():
     screen.blit(options, (40, height - 150))
 
 while gaming:
+    clock.tick(500)
     # checking for arrow keys (for going back to the menu screen and player movement)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -356,6 +365,11 @@ while gaming:
     # checking for right and left boundaries
     if alien.rect.x < 0 or alien.rect.x > width - alienSize:
         alien.bounce()
+
+    if len(healthness) == 0:
+        health = Healthbar(width, height)
+        healthness.add(health)
+        all.add(health)
 
     # checking for initiation with platforms
     for onePlatform in platforms:
@@ -402,7 +416,7 @@ while gaming:
         if keyboard.is_pressed('escape'):
             displayScreen = "menu"
     elif displayScreen == "play":
-        #screen.blit(stars, (0, 0))
+        # screen.blit(stars, (0, 0))
         play()
         if keyboard.is_pressed('escape'):
             displayScreen = "menu"
