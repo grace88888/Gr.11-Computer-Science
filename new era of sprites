@@ -5,6 +5,8 @@ import pygame, random, keyboard, time
 # variables
 img = pygame.image.load('test.png')
 ale = pygame.image.load('ale.png')
+theEndIsGood = pygame.image.load('raincheck.png')
+stars = pygame.image.load('cosmic.png')
 width = 500
 height = 600
 alienSize = 50
@@ -83,7 +85,7 @@ class Platforms(pygame.sprite.Sprite):
         # colouring
         self.colourG = 255
         self.colourB = 143
-        self.colours = (0, 80, 200)
+        self.colours = pink2
         self.colourRate = 0
 
     def update(self):
@@ -107,11 +109,11 @@ class Platforms(pygame.sprite.Sprite):
     def disappear(self):
         self.colourRate += 9
         if self.colourRate == 81 * 90:
-            self.colours = (69, 69, 69)
-        elif self.colourRate == 81 *180:
-            self.colours = (9,40,135)
-        elif self.colourRate == 81 *270:
-            self.colours = (100, 80, 90)
+            self.colours = pink
+        elif self.colourRate == 81 * 180:
+            self.colours = (253, 188, 180)
+        elif self.colourRate == 81 * 270:
+            self.colours = white
 
 class Enemy(pygame.sprite.Sprite):
     def __init__(self, width, height):
@@ -307,19 +309,19 @@ def play():
 
 def win():
     # background
-    screen.fill(sky)
+    screen.fill((201, 255, 229))
 
 def loss():
     # background
-    screen.fill(bleen)
+    screen.blit(theEndIsGood, (0, 0))
 
     # text
-    mehsage = myfont.render("You lost but that's okay", False, white)
+    mehsage = myfont.render("You lost but that's okay", False, pink2)
     finalScore = myfont.render('Score: ' + str(score), False, pink2)
     options = myfont.render('Do you want to play again [y] or [n]', False, pink2)
-    screen.blit(mehsage, (125, height - 300))
-    screen.blit(finalScore, (100, height - 150))
-    screen.blit(options, (40, height - 200))
+    screen.blit(mehsage, (125, height - 200))
+    screen.blit(finalScore, (100, height - 100))
+    screen.blit(options, (40, height - 150))
 
 while gaming:
     # checking for arrow keys (for going back to the menu screen and player movement)
@@ -366,7 +368,7 @@ while gaming:
         if pygame.sprite.collide_rect(alien, onePlatform):
             alien.changeY = 0
             onePlatform.disappear()
-            if onePlatform.colours == (100, 80, 90):
+            if onePlatform.colours == white:
                 onePlatform.kill()
 
         # generating new platforms and deleting the old ones
@@ -400,6 +402,7 @@ while gaming:
         if keyboard.is_pressed('escape'):
             displayScreen = "menu"
     elif displayScreen == "play":
+        #screen.blit(stars, (0, 0))
         play()
         if keyboard.is_pressed('escape'):
             displayScreen = "menu"
