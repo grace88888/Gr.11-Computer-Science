@@ -1,6 +1,7 @@
 #This game is about an undercover alien leaving earth because apocalypse... by Grace
 #initialization
-import pygame, random, keyboard, time
+import pygame, keyboard, random
+pygame.init()
 
 #variables
 width = 500
@@ -10,8 +11,9 @@ alienX = width / 2
 alienY = height - (height / 4) - alienSize
 score = 0
 gaming = True
-beginScoring = False
-
+beginScoring = True
+seconds = 0
+minutes = 0
 #colours
 white = (255, 255, 255)
 black = (0, 0, 0)
@@ -40,50 +42,62 @@ class Lives(pygame.sprite.Sprite):
         self.rect.x = 20
         self.rect.y = 20
 
-class Platforms(pygame.sprite.Sprite):
+class Beams(pygame.sprite.Sprite):
     def __init__(self, width, height):
         pygame.sprite.Sprite.__init__(self)
         self.image = pygame.Surface([width, height])
 
-        #loading the image, sizing it
-        self.image = pygame.transform.scale(self.image, (100, 20))
+        #loading the image and sizing it
+        self.image = pygame.image.load("angel.jpg").convert_alpha()
         self.mask = pygame.mask.from_surface(self.image)
+        self.image = pygame.transform.scale(self.image, (15, 25))
         self.rect = self.image.get_rect()
-        self.changeY = 0
-        self.movement = 0
-
-        #colouring
-        self.colourG = 255
-        self.colourB = 143
-        self.colours = (0, 80, 200)
-        self.colourRate = 0
+        self.rect.x = alien.rect.x
+        self.rect.y = alien.rect.y
+        self.changeY = 0.2
 
     def update(self):
-        self.image.fill(self.colours)
+        self.rect.y -= self.changeY
+
+class Eryka(pygame.sprite.Sprite):
+    def __init__(self, width, height):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.Surface([width, height])
+
+        #loading the image and sizing it
+        self.image = pygame.image.load("whale.png").convert_alpha()
+        self.mask = pygame.mask.from_surface(self.image)
+        self.image = pygame.transform.scale(self.image, (40, 40))
+        self.rect = self.image.get_rect()
+        self.rect.x = evil.rect.x
+        self.rect.y = evil.rect.y
+        self.changeY = 1
+
+    def update(self):
         self.rect.y += self.changeY
 
-    #for platform movement with the screem
-    def shift(self):
-        self.movement = height / 2 - alien.rect.y
-        if self.movement != 0 and self.movement > 0:
-            self.rect.y += 1
-        else:
-            self.rect.y += 0
+class Evilness(pygame.sprite.Sprite):
+    def __init__(self, width, height):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.Surface([width, height])
 
-    #colour application
-    def colourChange(self):
-        if self.colourG > 0.10:
-            self.colourG -= 0.05
-        if self.colourB < 255.90:
-            self.colourB += 0.05
-    def disappear(self):
-        self.colourRate += 9
-        if self.colourRate == 81 * 90:
-            self.colours = (69, 69, 69)
-        elif self.colourRate == 81 *180:
-            self.colours = (9,40,135)
-        elif self.colourRate == 81 *270:
-            self.colours = (100, 80, 90)
+        #loading the image and sizing it
+        self.image = pygame.image.load("whale.png").convert_alpha()
+        self.mask = pygame.mask.from_surface(self.image)
+        self.image = pygame.transform.scale(self.image, (100, 100))
+        self.rect = self.image.get_rect()
+        self.rect.x = 200
+        self.rect.y = 0
+        self.changeX = 0
+
+    def update(self):
+        self.rect.x += self.changeX
+    def moveme(self):
+        self.changeX = random.randint(0, 4)
+    def bounce(self):
+        self.changeX *= -1
+
+
 
 class Player(pygame.sprite.Sprite):
     def __init__(self, width, height):
@@ -99,39 +113,9 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = 250
         self.rect.y = height - (height / 4) - alienSize
-        self.changeX = 0
-        self.changeY = 0
-        self.gravity = 0
-        self.colourG = 255
-        self.colourB = 143
 
     def update(self):
-        self.rect.x += self.changeX
-        self.rect.y -= self.changeY
-        self.changeY -= self.gravity
-
-    #checking for left and right boundaries and player movement functions ... and colour
-    def right(self):
-        self.changeX = 2
-    def left(self):
-        self.changeX = -2
-    def bounce(self):
-        self.changeX *= -1
-    def jumpUp(self):
-        if self.changeY == 0:
-            self.changeY = 4.5
-            self.gravity = 0.09
-        #colour
-        if self.colourG > 0.10:
-            self.colourG -= 0.05
-        if self.colourB < 255.90:
-            self.colourB += 0.05
-    def stopX(self):
-        self.changeX = 0
-    def stopY(self):
-        self.rect.y = alienY + 1
-        self.changeY = 0
-        self.gravity = 0
+        (self.rect.x, self.rect.y) = pos
 
 pygame.init()
 pygame.font.init()
@@ -147,64 +131,37 @@ clock.tick(60)
 pygame.time.set_timer(pygame.USEREVENT, 1000)
 
 #setting up sprite groups
+antifun = pygame.sprite.Group()
 lives = pygame.sprite.Group()
-platforms = pygame.sprite.Group()
+shots = pygame.sprite.Group()
 all = pygame.sprite.Group()
 alien = Player(width, height)
 all.add(alien)
-changeHeartX = 20
+changeHeartX = 106
 changePlatY = 400
-for i in range (7):
-    block = Platforms(width, height + 200)
-    if i == 1:
-        block.rect.x = 0
-        block.rect.y = height - (height / 4)
-        block.image = pygame.transform.scale(block.image, (width, round(height - (height / 4))))
-    else:
-        block.rect.x = random.randrange(0, width - 100)
-        block.rect.y = changePlatY
-        block.image = pygame.transform.scale(block.image, (100, 20))
-    changePlatY -= 100
-    platforms.add(block)
-    all.add(block)
-for j in range (3):
+evil = Evilness(width, height)
+all.add(evil)
+antifun.add(evil)
+for j in range(3):
     heart = Lives(width, height)
     heart.rect.x = changeHeartX
     heart.rect.y = 20
-    changeHeartX += 43
+    changeHeartX -= 43
     lives.add(heart)
     all.add(heart)
 
+
+
+
+pygame.mouse.set_visible(False)
+
 def play():
    #the sky
-    moonrise = (alien.colourG, alien.colourG, alien.colourG)
-    screen.fill(moonrise)
+    screen.fill(white)
 
     #scoreboard
     scoreWrite = myfont.render("Score: " + str(score), False, (46, 72, 89))
     screen.blit(scoreWrite, (width - 110, 20))
-
-    #for player jumping
-    if keyboard.is_pressed('up'):
-        alien.jumpUp()
-
-    #generating new platforms and deleting the old ones
-    changePlatY = 400
-    for p in platforms:
-        if p.rect.y > height:
-            p.kill()
-            for i in range(1):
-                block = Platforms(width, height)
-                block.rect.x = random.randrange(0, width - 100)
-                block.rect.y = changePlatY
-                changePlatY -= 60
-                platforms.add(block)
-                all.add(block)
-
-    #removing lives
-    for aLife in lives:
-        if alien.rect.y > height:
-            aLife.kill()
 
    #drawing all sprites (platforms and player)
     all.update()
@@ -217,33 +174,30 @@ while gaming:
             gaming = False
         if event.type == pygame.USEREVENT and beginScoring == True:
             score += 1
+            if seconds / 59 == 1:
+                minutes += 1
+                seconds = 0
+            else:
+                seconds += 1
+            if seconds % random.randint(3, 5) == 0:
+                evil.moveme()
+                for s in range(3):
+                    mini = Eryka(width, height)
+                    mini.rect.x = evil.rect.x
+                    mini.rect.y = evil.rect.y
+                    antifun.add(mini)
+                    all.add(mini)
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_LEFT:
-                alien.left()
-            elif event.key == pygame.K_RIGHT:
-                alien.right()
-        elif event.type == pygame.KEYUP:
-            alien.stopX()
+            if event.key == pygame.K_SPACE:
+                bean = Beams(width, height)
+                bean.rect.x = alien.rect.x
+                bean.rect.y = alien.rect.y
+                shots.add(bean)
+                all.add(bean)
+    if evil.rect.x < 0 or evil.rect.x > width - 100:
+        evil.bounce()
 
-    #checking for right and left boundaries
-    if alien.rect.x < 0 or alien.rect.x > width - alienSize:
-        alien.bounce()
-
-    #checking for initiation with platforms
-    for onePlatform in platforms:
-        #if the player passes the halfway point, start score and actual game
-        if alien.rect.y < height / 2:
-            beginScoring = True
-            onePlatform.shift()
-
-        #checking for player and platform collision
-        if pygame.sprite.collide_rect(alien, onePlatform):
-            alien.changeY = 0
-            onePlatform.disappear()
-            if onePlatform.colours == (100, 80, 90):
-                onePlatform.kill()
-
-    #print(len(platforms))
+    pos = (pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1])
     play()
 
     #flips the graphics onto the screen
