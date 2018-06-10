@@ -4,6 +4,7 @@ import pygame
 import keyboard
 import random
 
+highScore = 0
 
 # setting up classes (for lives, platforms, enemies and the player)
 class Healthbar(pygame.sprite.Sprite):
@@ -233,7 +234,7 @@ pygame.font.init()
 
 def menu():
     # applying the background image and rendering text
-    screen.blit(img, (0, 0))
+    screen.blit(menuScreen, (0, 0))
     thisfont = pygame.font.SysFont('Consolas', 20)
     toPlay = thisfont.render('Press [space] to play', False, yellow)
     toInstruct = myfont.render('Press [i] for instructions', False, yellow)
@@ -243,7 +244,7 @@ def menu():
 
 def instruct():
     # applying the background image and rendering instructions onto the screen
-    screen.blit(ale, (0, 0))
+    screen.blit(instructScreen, (0, 0))
     thisfont = pygame.font.SysFont('Consolas', 18)
     rightInstruct = thisfont.render('Press [right] to move right, ', False, black)
     lastInstruct = myfont.render('[left] to move left and [up] to jump', False, black)
@@ -310,13 +311,15 @@ def loss():
     screen.blit(endScreen, (0, 0))
     lossFont = pygame.font.SysFont('Consolas', 93)
     sorry = lossFont.render('GAME OVER!', False, yellow)
-    message = myfont.render("You lost but that's okay", False, pink2)
-    finalScore = myfont.render('Score: ' + str(score), False, pink2)
-    options = myfont.render('Do you want to play again [y] or [n]', False, pink2)
+    message = myfont.render("You lost but that's okay", False, white)
+    finalScore = myfont.render('Score: ' + str(score), False, white)
+    highest = myfont.render('High Score: ' + str(highScore), False, white)
+    options = myfont.render('Do you want to play again [y] or [n]?', False, white)
     screen.blit(sorry, (0, height / 2 - 100))
-    screen.blit(message, (125, height - 200))
-    screen.blit(finalScore, (100, height - 100))
-    screen.blit(options, (40, height - 150))
+    screen.blit(message, (120, height - 200))
+    screen.blit(finalScore, (80, height - 100))
+    screen.blit(highest, (285, height - 100))
+    screen.blit(options, (55, height - 150))
 
     # setting up replay and / or quitting
     if keyboard.is_pressed('y'):
@@ -327,15 +330,16 @@ def loss():
 
 def loop():
     # declaring global variables
-    global gaming, displayScreen, beginScoring, score, seconds, minutes, alien, lives, stamina, all, width, height, black
-    global screen, myfont, pink2, bleen, img, ground, endScreen, ale, stars, yellow, green, sky, sky2, trueBlue
-    global purpatrate, alienX, alienY, base, alienSize, white, pink
+    global gaming,beginScoring, score, highScore, seconds, minutes
+    global width, height, base, alienX, alienY, alienSize
+    global screen, displayScreen, menuScreen, endScreen, instructScreen
+    global alien, lives, stamina, all
+    global yellow, green, ground, bleen, sky, sky2, trueBlue, purpatrate, pink, pink2, white, black, myfont
 
     # loading the images
-    img = pygame.image.load('test.png')
-    ale = pygame.image.load('ale.png')
+    menuScreen = pygame.image.load('test.png')
+    instructScreen = pygame.image.load('ale.png')
     endScreen = pygame.image.load('raincheck.png')
-    stars = pygame.image.load('cosmic.png')
 
     # defining the global variables
     width = 500
@@ -520,7 +524,6 @@ def loop():
             if keyboard.is_pressed('escape'):
                 displayScreen = "menu"
         elif displayScreen == "play":
-            # screen.blit(stars, (0, 0))
             play()
             if keyboard.is_pressed('escape'):
                 displayScreen = "menu"
@@ -529,6 +532,8 @@ def loop():
                 displayScreen = "loss"
         elif displayScreen == "loss":
             beginScoring = False
+            if score > highScore:
+                highScore = score
             for every in all:
                 every.reset()
             loss()
