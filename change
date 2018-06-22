@@ -500,12 +500,12 @@ def win():
         min_display = str(minutes)
 
     # applying the end screen image and text to the screen
-    message = myfont.render("YOU WON :)", False, white)
-    final_score = myfont.render('Score: ' + str(round(score)), False, white)
+    message = myfont.render("YOU WON :) ( + 500 pts)", False, white)
+    final_score = myfont.render('Score: ' + str(round(score + 500)), False, white)
     highest = myfont.render('High Score: ' + str(round(highScore)), False, white)
     options = myfont.render('Do you want to play again [y] or [n]?', False, white)
     time_write = myfont.render('Time: ' + str(min_display) + ":" + str(sec_display), False, white)
-    screen.blit(message, (200, height - 200))
+    screen.blit(message, (135, height - 200))
     screen.blit(final_score, (80, height - 100))
     screen.blit(highest, (285, height - 100))
     screen.blit(options, (55, height - 150))
@@ -581,10 +581,10 @@ def loop():
     menuScreen = pygame.image.load('test.png')
     instructScreen = pygame.image.load('ale.png')
     endScreen = pygame.image.load('raincheck.png')
-    winScreen = pygame.image.load('merp.png')
+    winScreen = pygame.image.load('this.png')
 
     # defining the global variables
-    level2 = 40 # this variable will trigger when level two should start
+    level2 = 50 # this variable will trigger when level two should start
     width = 500
     height = 600
     alienSize = 50
@@ -607,7 +607,7 @@ def loop():
     # loading the sound track
     pygame.mixer.music.set_volume(1.0)
     if displayScreen == "menu" or displayScreen == "instruct":
-        pygame.mixer.music.load('twrp.mp3')
+        pygame.mixer.music.load('mindmeld.mp3')
     else:
         pygame.mixer.music.load('twrp.mp3')
     pygame.mixer.music.play(-1)
@@ -695,6 +695,8 @@ def loop():
                 if score < level2:
                     score += 1 # adds points to the player's score for every second alive
                 # determining time (minutes and seconds)
+                else:
+                    score = score
                 if seconds / 59 == 1:
                     minutes += 1
                     seconds = 0
@@ -844,7 +846,7 @@ def loop():
         # checking for collisions of the beams to the boss to decrease boss health
         if pygame.sprite.spritecollide(evil, shots, False) and badHealth.width > 1:
             all.add(badHealth)
-            badHealth.change = 0.02
+            badHealth.change = 0.03
             badHealth.invisible = 1
             score += 0.02 # if boss is shot with the beam, remove the enemy and add 0.1 points to the player's score
         elif pygame.sprite.spritecollide(evil, shots, False) and badHealth.width <= 1:
@@ -904,9 +906,9 @@ def loop():
         elif displayScreen == "win":
             beginScoring = False # stop increasing score
             # calling function to rewrite over old high score
-            if score > highScore:
-                saveHS(round(score))
-                highScore = round(score)
+            if score + 500 > highScore:
+                saveHS(round(score + 500))
+                highScore = round(score + 500)
             # resetting all the classes
             for every in all:
                 every.reset()
@@ -924,7 +926,6 @@ def loop():
 
         # flips the graphics onto the screen
         pygame.display.update()
-        print(len(shots))
 
 # calling animation loop and ending command
 loop()
