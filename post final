@@ -9,7 +9,7 @@ import random
 # setting up classes (for lives, platforms, enemies, laser beams, health bars and the player)
 class Healthbar(pygame.sprite.DirtySprite):
     # loading the rectangle's size and position, setting up the reset function
-    def __init__(self, width, height):
+    def __init__(self):
         self.reset()
         self.image = pygame.transform.scale(self.image, (120, 20))
         self.mask = pygame.mask.from_surface(self.image)
@@ -19,7 +19,7 @@ class Healthbar(pygame.sprite.DirtySprite):
         self.change = 0
         self.rect.x = 20
         self.rect.y = 55
-        self.dirty = 2 # always draws
+        self.dirty = 2  # always draws
 
     # setting the health bar to decrease when damaged
     def update(self):
@@ -34,7 +34,7 @@ class Healthbar(pygame.sprite.DirtySprite):
 
 class BossHealth(pygame.sprite.DirtySprite):
     # loading the rectangle's size and position (to match the enemy), setting up reset
-    def __init__(self, width, height):
+    def __init__(self):
         self.reset()
         self.image = pygame.transform.scale(self.image, (95, 15))
         self.mask = pygame.mask.from_surface(self.image)
@@ -44,7 +44,7 @@ class BossHealth(pygame.sprite.DirtySprite):
         self.change = 0
         self.rect.x = evil.rect.x
         self.rect.y = evil.rect.y + 100
-        self.invisible = 0 # variable to change drawing on the screen
+        self.invisible = 0  # variable to change drawing on the screen
 
     # setting the health bar to decrease when damaged and to reappear / disappear
     def update(self):
@@ -52,7 +52,7 @@ class BossHealth(pygame.sprite.DirtySprite):
         self.rect.y = evil.rect.y + 100
         self.width -= self.change
         self.image = pygame.transform.scale(self.image, (int(self.width), 20))
-        self.dirty = self.invisible # to change whether the rectangle will appear
+        self.dirty = self.invisible  # to change whether the rectangle will appear
 
     # resetting the variables
     def reset(self):
@@ -62,7 +62,7 @@ class BossHealth(pygame.sprite.DirtySprite):
 
 class Lives(pygame.sprite.DirtySprite):
     # sizing the heart image and setting up reset
-    def __init__(self, width, height):
+    def __init__(self):
         self.reset()
         self.image = pygame.image.load("heart.png").convert_alpha()
         self.mask = pygame.mask.from_surface(self.image)
@@ -70,7 +70,7 @@ class Lives(pygame.sprite.DirtySprite):
         self.rect = self.image.get_rect()
         self.rect.x = 20
         self.rect.y = 20
-        self.dirty = 2 # always draws
+        self.dirty = 2  # always draws
 
     # resetting the variables
     def reset(self):
@@ -79,7 +79,7 @@ class Lives(pygame.sprite.DirtySprite):
 
 
 class Beams(pygame.sprite.DirtySprite):
-    def __init__(self, width, height):
+    def __init__(self):
         # loading the rectangle's size and position (with the player), setting up reset
         self.reset()
         self.mask = pygame.mask.from_surface(self.image)
@@ -90,26 +90,26 @@ class Beams(pygame.sprite.DirtySprite):
         self.rect.y = alien.rect.y
         self.changeX = 0
         self.changeY = 0
-        self.dirty = 2 # always draws
+        self.dirty = 2  # always draws
 
     def update(self):
         # updates which direction the beam should fire in
         self.rect.x -= self.changeX
         self.rect.y -= self.changeY
 
-    def left(self): # firing left
+    def left(self):  # firing left
         self.changeY = 0
         self.changeX = 1
 
-    def right(self): # firing right
+    def right(self):  # firing right
         self.changeY = 0
         self.changeX = -1
 
-    def up(self): # firing up
+    def up(self):  # firing up
         self.changeX = 0
         self.changeY = 1
 
-    def down(self): # firing down
+    def down(self):  # firing down
         self.changeX = 0
         self.changeY = -1
 
@@ -121,20 +121,19 @@ class Beams(pygame.sprite.DirtySprite):
 
 class Platforms(pygame.sprite.DirtySprite):
     # loading the rectangle's size and position (random location), setting up reset
-    def __init__(self, width, height):
+    def __init__(self):
         self.reset()
         self.image = pygame.transform.scale(self.image, (100, 20))
         self.mask = pygame.mask.from_surface(self.image)
         self.rect = self.image.get_rect()
         self.changeY = 0
         self.movement = 0
-        self.dirty = 2 # always draws
+        self.dirty = 2  # always draws
 
         # colouring the rectangle
         self.colours = pink2
         self.colourRate = 0
         self.fade = 7290
-
 
     def update(self):
         # setting up the colours of the platform as it breaks
@@ -168,16 +167,17 @@ class Platforms(pygame.sprite.DirtySprite):
 
 class Floor(pygame.sprite.DirtySprite):
     # loading and sizing the image, setting up reset
-    def __init__(self, width, height):
+    def __init__(self):
         self.reset()
         self.image = pygame.transform.scale(self.image, (width, 100))
         self.mask = pygame.mask.from_surface(self.image)
         self.rect = self.image.get_rect()
         self.image.fill(pink2)
+        self.movement = 0
         self.rect.x = 0
         self.rect.y = base
         self.changeY = 0
-        self.dirty = 2 # always draws
+        self.dirty = 2  # always draws
 
     # adjusting floor position to fall
     def update(self):
@@ -199,7 +199,7 @@ class Floor(pygame.sprite.DirtySprite):
 
 class EnemyDown(pygame.sprite.DirtySprite):
     # setting up reset and variables
-    def __init__(self, width, height):
+    def __init__(self):
         self.reset()
 
         # loading the image and sizing it
@@ -213,7 +213,7 @@ class EnemyDown(pygame.sprite.DirtySprite):
         self.rect.y = -90
         self.changeY = 1
         self.movement = 0
-        self.dirty = 2 # always draws
+        self.dirty = 2  # always draws
 
     # updating the person to fall down
     def update(self):
@@ -235,7 +235,7 @@ class EnemyDown(pygame.sprite.DirtySprite):
 
 class EnemySides(pygame.sprite.DirtySprite):
     # setting up the variables
-    def __init__(self, width, height):
+    def __init__(self):
         self.reset()
 
         # loading the image and sizing it
@@ -250,7 +250,7 @@ class EnemySides(pygame.sprite.DirtySprite):
         self.movement = 0
         self.changeX = 0
         self.changeY = 0
-        self.dirty = 2 # always draws
+        self.dirty = 2  # always draws
 
     # updating the character to move across the screen
     def update(self):
@@ -262,7 +262,7 @@ class EnemySides(pygame.sprite.DirtySprite):
             self.rect.x += self.changeX
         else:
             if self.rect.x == 1:
-                self.changeX = random.randint(1,3)
+                self.changeX = random.randint(1, 3)
             elif self.rect.x == width - 51:
                 self.changeY = random.randint(1, 3) * -1
             self.rect.x += self.changeX
@@ -287,7 +287,7 @@ class EnemySides(pygame.sprite.DirtySprite):
 
 
 class BossMinions(pygame.sprite.DirtySprite):
-    def __init__(self, width, height):
+    def __init__(self):
         # loading the image and sizing it, setting up reset
         self.reset()
         self.image = pygame.image.load("whale.png").convert_alpha()
@@ -297,7 +297,7 @@ class BossMinions(pygame.sprite.DirtySprite):
         self.rect.x = evil.rect.x
         self.rect.y = evil.rect.y
         self.changeY = 1
-        self.dirty = 2 # always draws
+        self.dirty = 2  # always draws
 
     # adjusting the position to fall from the boss character
     def update(self):
@@ -310,8 +310,8 @@ class BossMinions(pygame.sprite.DirtySprite):
 
 
 class Boss(pygame.sprite.DirtySprite):
-    def __init__(self, width, height):
-        #loading the image and sizing it, setting up reset
+    def __init__(self):
+        # loading the image and sizing it, setting up reset
         self.reset()
         self.image = pygame.image.load("whale.png").convert_alpha()
         self.mask = pygame.mask.from_surface(self.image)
@@ -320,7 +320,7 @@ class Boss(pygame.sprite.DirtySprite):
         self.rect.x = 200
         self.rect.y = 0
         self.changeX = 0
-        self.dirty = 2 # always draws
+        self.dirty = 2  # always draws
 
     # updating the position
     def update(self):
@@ -341,7 +341,7 @@ class Boss(pygame.sprite.DirtySprite):
 
 
 class Player(pygame.sprite.DirtySprite):
-    def __init__(self, width, height):
+    def __init__(self):
         # loading the image and sizing it, setting up reset
         self.reset()
         self.image = pygame.image.load("lamb.png").convert_alpha()
@@ -358,7 +358,7 @@ class Player(pygame.sprite.DirtySprite):
         self.colourR = 255
         self.colourG = 235
         self.colourB = 205
-        self.dirty = 2 # always draws
+        self.dirty = 2  # always draws
 
     # updating the player to move left and right and fall down after jumping
     def update(self):
@@ -375,16 +375,16 @@ class Player(pygame.sprite.DirtySprite):
                 (self.rect.x, self.rect.y) = pos
 
     # defining player movement
-    def right(self): # moving right
+    def right(self):  # moving right
         self.changeX = 1
 
-    def left(self): # moving left
+    def left(self):  # moving left
         self.changeX = -1
 
-    def bounce(self): # bouncing off vertical boundaries
+    def bounce(self):  # bouncing off vertical boundaries
         self.changeX *= -1
 
-    def jump_up(self): # jumping up
+    def jump_up(self):  # jumping up
         if self.changeY == 0:
             self.changeY = 4.5
             self.gravity = 0.07
@@ -397,7 +397,7 @@ class Player(pygame.sprite.DirtySprite):
         if self.colourB > 10:
             self.colourB -= 0.05
 
-    def stop_x(self): # stopping character movement
+    def stop_x(self):  # stopping character movement
         self.changeX = 0
         self.rect.y = self.rect.y + 1
 
@@ -417,8 +417,8 @@ pygame.mixer.init(frequency=22050, size=16, channels=2, buffer=4096)
 def menu():
     # applying the background image and rendering text of menu instructions
     screen.blit(menuScreen, (0, 0))
-    thisfont = pygame.font.SysFont('Consolas', 20)
-    to_play = thisfont.render('Press [space] to play', False, yellow)
+    this_font = pygame.font.SysFont('Consolas', 20)
+    to_play = this_font.render('Press [space] to play', False, yellow)
     to_instruct = myfont.render('Press [i] for instructions', False, yellow)
     screen.blit(to_play, (135, height - 100))
     screen.blit(to_instruct, (115, height - 50))
@@ -427,8 +427,8 @@ def menu():
 def instruct():
     # applying the background image and rendering instructions onto the screen
     screen.blit(instructScreen, (0, 0))
-    thisfont = pygame.font.SysFont('Consolas', 10)
-    go_back = thisfont.render('Press [esc] to return to the menu screen', False, white)
+    this_font = pygame.font.SysFont('Consolas', 10)
+    go_back = this_font.render('Press [esc] to return to the menu screen', False, white)
     screen.blit(go_back, (135, height - 50))
 
 
@@ -456,14 +456,14 @@ def play():
             elif healthLeft.width <= 1 and len(lives) == 2:
                 healthLeft.kill()
                 aLife.kill()
-                all.remove(aLife)
+                all_sprites.remove(aLife)
             elif healthLeft.width <= 1 and len(lives) == 1:
                 aLife.kill()
 
     # drawing all sprites onto the screen
-    all.clear(screen, None)
-    all.update()
-    all.draw(screen)
+    all_sprites.clear(screen, None)
+    all_sprites.update()
+    all_sprites.draw(screen)
 
     # making and displaying the scoreboard and time
     if seconds < 10:
@@ -480,8 +480,8 @@ def play():
     screen.blit(time_write, (width - 343, 20))
 
     if score >= level2 and going_up > -100:
-        thisfont = pygame.font.SysFont('Consolas', 100)
-        two_text = thisfont.render('LEVEL TWO', False, red)
+        this_font = pygame.font.SysFont('Consolas', 100)
+        two_text = this_font.render('LEVEL TWO', False, red)
         screen.blit(two_text, (0, going_up))
 
 
@@ -512,9 +512,9 @@ def win():
     screen.blit(time_write, (200, height - 50))
 
     # setting up replay and quitting options
-    if keyboard.is_pressed('y'): # press 'y' to start the game loop again
+    if keyboard.is_pressed('y'):  # press 'y' to start the game loop again
         loop()
-    elif keyboard.is_pressed('n'): # press 'n' to stop the game loop
+    elif keyboard.is_pressed('n'):  # press 'n' to stop the game loop
         pygame.quit()
 
 
@@ -552,18 +552,18 @@ def loss():
         pygame.quit()
 
 
-# reading a file to obtain highscore
-def getHS():
-    highScoreFile = open("highscore", "r")
-    HS = int(highScoreFile.read())
-    highScoreFile.close()
-    return HS
+# reading a file to obtain high score
+def get_hs():
+    high_score_file = open("highscore", "r")
+    hs = int(high_score_file.read())
+    high_score_file.close()
+    return hs
 
 
 # taking the newer high score and writing over the previous high score in a file
-def saveHS(newHS):
+def save_hs(new_hs):
     high_score_file = open("highscore", "w")
-    high_score_file.write(str(newHS))
+    high_score_file.write(str(new_hs))
     high_score_file.close()
 
 
@@ -573,7 +573,7 @@ def loop():
     global gaming, beginScoring, score, highScore, seconds, minutes
     global width, height, base, alienX, alienY, alienSize
     global screen, displayScreen, menuScreen, endScreen, instructScreen, level2, winScreen
-    global alien, lives, stamina, platforms, shots, bosslings,all
+    global alien, lives, stamina, platforms, shots, bosslings, all_sprites
     global red, yellow, green, ground, bleen, sky, sky2, trueBlue, purpatrate, pink, pink2, white, black, myfont
     global evil, pos, level2,  human2, going_up, min_display, sec_display
 
@@ -584,7 +584,7 @@ def loop():
     winScreen = pygame.image.load('this.png')
 
     # defining the global variables
-    level2 = 50 # this variable will trigger when level two should start
+    level2 = 50  # this variable will trigger when level two should start
     width = 500
     height = 600
     alienSize = 50
@@ -597,7 +597,7 @@ def loop():
     going_up = height
     min_display = 0
     sec_display = 0
-    highScore = int(getHS()) # calling function to get the high score written in the file
+    highScore = int(get_hs())  # calling function to get the high score written in the file
 
     # setting up player screens and scoring
     displayScreen = "menu"
@@ -637,50 +637,50 @@ def loop():
     pygame.time.set_timer(pygame.USEREVENT, 1000)
 
     # setting up sprite groups
-    stamina = pygame.sprite.Group() # for health bar
-    lives = pygame.sprite.Group() # for hearts
-    platforms = pygame.sprite.Group() # for containing all platforms
-    enemies = pygame.sprite.Group() # for containing all enemies
-    shots = pygame.sprite.Group() # for containing all player beams
-    all = pygame.sprite.LayeredDirty() # for containing all sprites
+    stamina = pygame.sprite.Group()  # for health bar
+    lives = pygame.sprite.Group()  # for hearts
+    platforms = pygame.sprite.Group()  # for containing all platforms
+    enemies = pygame.sprite.Group()  # for containing all enemies
+    shots = pygame.sprite.Group()  # for containing all player beams
+    all_sprites = pygame.sprite.LayeredDirty()  # for containing all sprites
 
     # generating sprites and adding them to sprite groups
-    change_heart_x = 106 # for changing position of the hearts
-    change_plat_y = 400 - (height / 5) # for changing positions of the platforms vertically
-    alien = Player(width, height)  # creating a variable to store player sprite
-    floor = Floor(width, height)  # creating a variable to store floor sprite
-    evil = Boss(width, height)  # creating a variable to store the boss character sprite
-    badHealth = BossHealth(width, height)  # creating a variable to house the enemy's health
-    human2 = EnemySides(width, height)  # sprites that go side to side
-    all.add(alien)
-    all.add(floor)
+    change_heart_x = 106  # for changing position of the hearts
+    change_plat_y = 400 - (height / 5)  # for changing positions of the platforms vertically
+    alien = Player()  # creating a variable to store player sprite
+    floor = Floor()  # creating a variable to store floor sprite
+    evil = Boss()  # creating a variable to store the boss character sprite
+    bad_health = BossHealth()  # creating a variable to house the enemy's health
+    human2 = EnemySides()  # sprites that go side to side
+    all_sprites.add(alien)
+    all_sprites.add(floor)
 
     # for platforms
     for a in range(6):
         # creating and adding block sprites to the platforms and all sprites group
-        block = Platforms(width, height)
+        block = Platforms()
         block.rect.x = random.randrange(150, 350)
         block.rect.y = change_plat_y
         block.image = pygame.transform.scale(block.image, (100, 20))
         change_plat_y -= (height / 5)
         platforms.add(block)
-        all.add(block)
+        all_sprites.add(block)
 
     # for hearts
     for b in range(3):
         # creating heart sprites and adding them to the lives and all sprites group
-        heart = Lives(width, height)
+        heart = Lives()
         heart.rect.x = change_heart_x
         heart.rect.y = 20
         change_heart_x -= 43
         lives.add(heart)
-        all.add(heart)
+        all_sprites.add(heart)
 
     # checking to see if it's time to start level two yet
     if score > level2:
-        enemyAmount = 10 # draws this amount of enemies in level two
+        enemy_amount = 10  # draws this amount of enemies in level two
     else:
-        enemyAmount = 2 # draws this amount of enemies in the level one
+        enemy_amount = 2  # draws this amount of enemies in the level one
 
     # animation loop
     while gaming:
@@ -693,7 +693,7 @@ def loop():
                 gaming = False
             if event.type == pygame.USEREVENT and beginScoring:
                 if score < level2:
-                    score += 1 # adds points to the player's score for every second alive
+                    score += 1  # adds points to the player's score for every second alive
                 # determining time (minutes and seconds)
                 else:
                     score = score
@@ -707,88 +707,88 @@ def loop():
                 if seconds % random.randint(2, 4) == 0 and score < level2 and score > 7:
                     # creating enemy sprites for level one only and adding them to the enemies and all sprites group
                     for c in range(1):
-                        human = EnemyDown(width, height)  # sprites that fall down from the top of the screen
+                        human = EnemyDown()  # sprites that fall down from the top of the screen
                         human.rect.x = alien.rect.x
                         human.rect.y = - 90
                         enemies.add(human)
-                        all.add(human)
+                        all_sprites.add(human)
                 elif seconds % random.randint(1, 2) == 0 and score > 14:
                     # creating enemy sprites and adding them to the enemies and all sprites group
-                    for d in range(enemyAmount):
+                    for d in range(enemy_amount):
                         if score < level2:
                             human2.rect.x = random.choice([- 90, 590])
                             human2.rect.y = random.randint(0, height)
                             enemies.add(human2)
-                            all.add(human2)
+                            all_sprites.add(human2)
                         elif score >= level2:
                             human2.rect.x = random.choice([1, width - 51])
                             human2.rect.y = random.randint(1, 599)
                             enemies.add(human2)
-                            all.add(human2)
+                            all_sprites.add(human2)
                 if seconds % random.randint(3, 5) == 0 and score >= level2:
                     # calling the boss to move side to side
                     evil.moving()
                     # creating boss projectiles and adding them to the enemies and all sprites group
                     for s in range(3):
-                        bosslings = BossMinions(width, height)
+                        bosslings = BossMinions()
                         bosslings.rect.x = evil.rect.x
                         bosslings.rect.y = evil.rect.y
                         enemies.add(bosslings)
-                        all.add(bosslings)
+                        all_sprites.add(bosslings)
 
             # player movement and beam directions to move in
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LEFT:
                     if score < level2:
-                        alien.left() # moving the player left on level one
+                        alien.left()  # moving the player left on level one
                     else:
                         # level two
                         # creating beams and adding them to the shots and all sprites group
                         # matching the position of the beam to the player
-                        bullet = Beams(width, height) # fires left
+                        bullet = Beams()  # fires left
                         bullet.rect.x = alien.rect.x
                         bullet.rect.y = alien.rect.y
                         bullet.changeX = 3
                         shots.add(bullet)
-                        all.add(bullet)
+                        all_sprites.add(bullet)
                 elif event.key == pygame.K_RIGHT:
                     if score < level2:
-                        alien.right() # moving the player right on level one
+                        alien.right()  # moving the player right on level one
                     else:
                         # level two
                         # creating beams and adding them to the shots and all sprites group
                         # matching the position of the beam to the player
-                        bullet = Beams(width, height) # fires right
+                        bullet = Beams()  # fires right
                         bullet.rect.x = alien.rect.x
                         bullet.rect.y = alien.rect.y
                         bullet.changeX = -3
                         shots.add(bullet)
-                        all.add(bullet)
+                        all_sprites.add(bullet)
                 elif event.key == pygame.K_UP:
                     # level two
                     # creating beams and adding them to the shots and all sprites group
                     # matching the position of the beam to the player
                     if score >= level2:
-                        bullet = Beams(width, height) # fires up
+                        bullet = Beams()  # fires up
                         bullet.rect.x = alien.rect.x
                         bullet.rect.y = alien.rect.y
                         bullet.changeY = 3
                         shots.add(bullet)
-                        all.add(bullet)
+                        all_sprites.add(bullet)
                 elif event.key == pygame.K_DOWN:
                     # level two
                     # creating beams and adding them to the shots and all sprites group
                     # matching the position of the beam to the player
                     if score >= level2:
-                        bullet = Beams(width, height) # fires down
+                        bullet = Beams()  # fires down
                         bullet.rect.x = alien.rect.x
                         bullet.rect.y = alien.rect.y
                         bullet.changeY = -3
                         shots.add(bullet)
-                        all.add(bullet)
+                        all_sprites.add(bullet)
             elif event.type == pygame.KEYUP:
                 if score < level2:
-                    alien.stop_x() # stopping character movement on level one
+                    alien.stop_x()  # stopping character movement on level one
 
         # checking for right and left boundaries
         if alien.rect.x < 0 or alien.rect.x > width - alienSize:
@@ -798,9 +798,9 @@ def loop():
 
         # reloading the health bar after it hits one
         if len(stamina) == 0:
-            health = Healthbar(width, height)
+            health = Healthbar()
             stamina.add(health)
-            all.add(health)
+            all_sprites.add(health)
 
         # decreasing the healthbar when there are collisions with the player
         if pygame.sprite.spritecollide(alien, enemies, False) and health.width > 1:
@@ -819,43 +819,43 @@ def loop():
             # checking for player and platform collision
             if pygame.sprite.collide_rect(alien, onePlatform):
                 alien.changeY = 0
-                onePlatform.disappear() # calling the colours to start fading
+                onePlatform.disappear()  # calling the colours to start fading
                 if onePlatform.colours == white:
-                    onePlatform.kill() # remove the platform once it fades too much
+                    onePlatform.kill()  # remove the platform once it fades too much
 
             # generating new platforms
             if onePlatform.rect.y > height:
                 for l in range(1):
-                    newBlock = Platforms(width, height)
+                    new_block = Platforms()
                     if onePlatform.rect.x < 100:
-                        newBlock.rect.x = 150
+                        new_block.rect.x = 150
                     elif onePlatform.rect.x >= height - 150:
-                        newBlock.rect.x = onePlatform.rect.x - 100
+                        new_block.rect.x = onePlatform.rect.x - 100
                     else:
-                        newBlock.rect.x = random.randint(100, width - 100)
-                    newBlock.rect.y = - height / 5
-                    platforms.add(newBlock)
-                    all.add(newBlock)
+                        new_block.rect.x = random.randint(100, width - 100)
+                    new_block.rect.y = - height / 5
+                    platforms.add(new_block)
+                    all_sprites.add(new_block)
 
                     # decreasing the amount of time until the platforms break
                     if score > 20:
-                        newBlock. fade = 810
+                        new_block. fade = 810
                     elif score > 10:
-                        newBlock.fade = 1620
+                        new_block.fade = 1620
 
         # checking for collisions of the beams to the boss to decrease boss health
-        if pygame.sprite.spritecollide(evil, shots, False) and badHealth.width > 1:
-            all.add(badHealth)
-            badHealth.change = 0.03
-            badHealth.invisible = 1
-            score += 0.02 # if boss is shot with the beam, remove the enemy and add 0.1 points to the player's score
-        elif pygame.sprite.spritecollide(evil, shots, False) and badHealth.width <= 1:
-            displayScreen = "win" # if the boss' health reaches one or less, the player wins, transitions to win screen
+        if pygame.sprite.spritecollide(evil, shots, False) and bad_health.width > 1:
+            all_sprites.add(bad_health)
+            bad_health.change = 0.03
+            bad_health.invisible = 1
+            score += 0.02  # if boss is shot with the beam, remove the enemy and add 0.1 points to the player's score
+        elif pygame.sprite.spritecollide(evil, shots, False) and bad_health.width <= 1:
+            displayScreen = "win"  # if the boss' health reaches one or less, the player wins, transitions to win screen
         else:
-            all.remove(badHealth)
+            all_sprites.remove(bad_health)
             # keeping the health bar the same if there is no collision
-            badHealth.change = 0
-            badHealth.invisible = 0
+            bad_health.change = 0
+            bad_health.invisible = 0
             score = score
 
         for peep in enemies:
@@ -863,13 +863,13 @@ def loop():
             if score < level2:
                 peep.shift()
             if pygame.sprite.spritecollide(peep, shots, False) and beginScoring == True and peep != evil:
-                peep.kill() # if enemies are shot with the beam, remove the enemy and add 5 points to the player's score
+                peep.kill()  # if enemies are shot, remove the enemy and add 5 points to the player's score
                 score += 5
             else:
                 score = score
 
         # killing any sprite that goes off screen so it doesn't overload
-        for one in all:
+        for one in all_sprites:
             if one.rect.y > height  or one.rect.x >= width + 100 or one.rect.x <= - 100:
                 one.kill()
 
@@ -878,12 +878,11 @@ def loop():
             for plat in platforms:
                 plat.kill()
             enemies.add(evil)
-            all.add(evil)
+            all_sprites.add(evil)
             going_up -= 1
             for shot in shots:
                 if shot.rect.y < 0:
                     shot.kill()
-
 
         # for changing into different screens
         if displayScreen == "menu":
@@ -904,28 +903,29 @@ def loop():
             if len(lives) == 0:
                 displayScreen = "loss"
         elif displayScreen == "win":
-            beginScoring = False # stop increasing score
+            beginScoring = False  # stop increasing score
             # calling function to rewrite over old high score
             if score + 500 > highScore:
-                saveHS(round(score + 500))
+                save_hs(round(score + 500))
                 highScore = round(score + 500)
             # resetting all the classes
-            for every in all:
+            for every in all_sprites:
                 every.reset()
             win()
         elif displayScreen == "loss":
-            beginScoring = False # stop increasing score
+            beginScoring = False  # stop increasing score
             # calling function to rewrite over old high score
             if score > highScore:
-                saveHS(round(score))
+                save_hs(round(score))
                 highScore = round(score)
             # resetting all the classes
-            for every in all:
+            for every in all_sprites:
                 every.reset()
             loss()
 
         # flips the graphics onto the screen
         pygame.display.update()
+
 
 # calling animation loop and ending command
 loop()
